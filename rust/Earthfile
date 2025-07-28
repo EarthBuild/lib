@@ -154,9 +154,12 @@ get-jq:
 
 INSTALL_CARGO_SWEEP:
     FUNCTION
+    # Pinned to fix compatibility with Rust >= 1.85.0. See https://github.com/earthly/lib/issues/65
+    # TODO: Update to the next cargo-sweep release once available.
+    ARG CARGO_SWEEP_REV="4ac76bcd1490823a9bcd41bcb242ed464458f6a6"
     RUN if [ ! -f $CARGO_HOME/bin/cargo-sweep ]; then \
           echo "Installing cargo sweep" ; \
-          cargo install cargo-sweep@0.7.0 --locked --root $CARGO_HOME; \
+          cargo install --git https://github.com/holmgr/cargo-sweep.git --rev $CARGO_SWEEP_REV cargo-sweep --locked --root $CARGO_HOME; \
         fi;
 
 INSTALL_EARTHLY_FUNCTIONS:
