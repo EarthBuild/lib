@@ -25,6 +25,9 @@ jobs:
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: earthly/actions-setup@bda7cee4972033c6d6b77d77165e787f389f8752
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run tests
         run: |-
           # earthly config git "{github.com: {auth: ssh, user: git}}" && \
@@ -46,6 +49,9 @@ jobs:
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: earthly/actions-setup@bda7cee4972033c6d6b77d77165e787f389f8752
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run tests
         run: |-
           # earthly config git "{github.com: {auth: ssh, user: git}}" && \
