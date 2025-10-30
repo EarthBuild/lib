@@ -37,7 +37,7 @@ jobs:
 
   test-native-arm:
     name: +test-native-arm
-    runs-on: ubuntu-latest-arm
+    runs-on: ubuntu-24.04-arm
     env:
       FORCE_COLOR: 1
       EARTHLY_CONVERSION_PARALLELISM: "5"
