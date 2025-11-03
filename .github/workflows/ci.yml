@@ -34,9 +34,7 @@ jobs:
           eval $(ssh-agent)
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
-          cat > ~/.ssh/id_ed25519 <<'EOF'
-            ${{ secrets.EARTHBUILDCI_GITHUB_USER_SSH_PRIVATE_KEY }}
-          EOF
+          printf '%s\n' "${{ secrets.EARTHBUILDCI_GITHUB_USER_SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-add ~/.ssh/id_ed25519
           earthly --ci -P --secret-file earthbuildci_id_ed25519=~/.ssh/id_ed25519 +test
@@ -64,9 +62,10 @@ jobs:
           eval $(ssh-agent)
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
-          cat > ~/.ssh/id_ed25519 <<'EOF'
-            ${{ secrets.EARTHBUILDCI_GITHUB_USER_SSH_PRIVATE_KEY }}
-          EOF
+          printf '%s\n' "${{ secrets.EARTHBUILDCI_GITHUB_USER_SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-add ~/.ssh/id_ed25519
+          ssh-keyscan -t rsa,ecdsa,ed25519 -H github.com >> ~/.ssh/known_hosts
+          ssh-keyscan -p 443 -t rsa,ecdsa,ed25519 -H ssh.github.com >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
           earthly --ci -P --secret-file earthbuildci_id_ed25519=~/.ssh/id_ed25519 ./utils/dind+test
