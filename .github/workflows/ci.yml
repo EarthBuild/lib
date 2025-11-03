@@ -68,4 +68,4 @@ jobs:
           ssh-keyscan -t rsa,ecdsa,ed25519 -H github.com >> ~/.ssh/known_hosts
           ssh-keyscan -p 443 -t rsa,ecdsa,ed25519 -H ssh.github.com >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
-          earthly --ci -P --secret-file earthbuildci_id_ed25519=~/.ssh/id_ed25519 ./utils/dind+test
+          earthly --ci -P --secret-file earthbuildci_id_ed25519=~/.ssh/id_ed25519 +test

@@ -1,6 +1,5 @@
 VERSION --pass-args --arg-scope-and-set 0.7
 
-    # --platform=linux/amd64 --platform=linux/arm64
 all:
     BUILD +test-add-known-hosts-image \
         --base_image=alpine:latest \

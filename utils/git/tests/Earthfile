@@ -1,6 +1,5 @@
 VERSION --arg-scope-and-set --pass-args 0.7
 
-# --platform=linux/amd64 --platform=linux/arm64
 all:
     BUILD +test-deep-clone-image \
         --base_image=alpine/git:latest \
