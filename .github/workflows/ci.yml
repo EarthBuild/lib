@@ -29,11 +29,17 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run tests
-        run: |-
-          # earthly config git "{github.com: {auth: ssh, user: git}}" && \
-          # eval $(ssh-agent) && \
-          # earthly secrets --org earthly-technologies --project core get littleredcorvette-id_rsa | ssh-add - && \
-          earthly --ci -P +test
+        run: |
+          earthly config git "{github.com: {auth: ssh, user: git}}"
+          eval $(ssh-agent)
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          cat > ~/.ssh/id_ed25519 <<'EOF'
+            ${{ secrets.EARTHBUILDCI_GITHUB_USER_SSH_PRIVATE_KEY }}
+          EOF
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-add ~/.ssh/id_ed25519
+          earthly --ci -P --secret-file earthbuildci_id_ed25519=~/.ssh/id_ed25519 +test
 
   test-native-arm:
     name: +test-native-arm
@@ -53,8 +59,14 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run tests
-        run: |-
-          # earthly config git "{github.com: {auth: ssh, user: git}}" && \
-          # eval $(ssh-agent) && \
-          # earthly secrets --org earthly-technologies --project core get littleredcorvette-id_rsa | ssh-add - && \
-          earthly --ci -P ./utils/dind+test
+        run: |
+          earthly config git "{github.com: {auth: ssh, user: git}}"
+          eval $(ssh-agent)
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          cat > ~/.ssh/id_ed25519 <<'EOF'
+            ${{ secrets.EARTHBUILDCI_GITHUB_USER_SSH_PRIVATE_KEY }}
+          EOF
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-add ~/.ssh/id_ed25519
+          earthly --ci -P --secret-file earthbuildci_id_ed25519=~/.ssh/id_ed25519 ./utils/dind+test
