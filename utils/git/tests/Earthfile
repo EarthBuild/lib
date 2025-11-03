@@ -7,7 +7,7 @@ all:
         --base_image=debian:stable \
         --base_image=debian:stable-slim \
         --base_image=ubuntu:latest \
-        --base_image=amazonlinux:1 \
+        # --base_image=amazonlinux:1 \
         --base_image=amazonlinux:2 \
         --GIT_URL=https://github.com/EarthBuild/hello-world.git \
         --GIT_URL=git@github.com:EarthBuild/hello-world.git \
