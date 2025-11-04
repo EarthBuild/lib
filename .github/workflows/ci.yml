@@ -22,6 +22,8 @@ jobs:
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  #v5.0.0
       - uses: docker/login-action@v3
+        # if fork no secret access, so skip and take chances on rate limiting.
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -50,6 +52,8 @@ jobs:
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  #v5.0.0
       - uses: docker/login-action@v3
+        # if fork no secret access, so skip and take chances on rate limiting.
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
