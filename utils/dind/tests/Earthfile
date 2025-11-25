@@ -1,9 +1,12 @@
-VERSION 0.7
+VERSION 0.8
 
 all:
+    # renovate: datasource=docker packageName=alpine
+    LET alpine_version=3.22.2
+
     BUILD +test-install-dind-for-image \
         --base_image=docker:dind \
-        --base_image=alpine:latest \
+        --base_image=alpine:${alpine_version} \
         --base_image=debian:stable \
         --base_image=debian:stable-slim \
         --base_image=debian:oldstable \

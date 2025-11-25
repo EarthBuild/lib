@@ -22,7 +22,7 @@ DEEP_CLONE:
     IF [ -z $SECRET_PATH ]
         RUN --ssh git fetch --unshallow
     ELSE
-        RUN --mount=type=secret,id=$SECRET_PATH,mode=0400,target=/root/.ssh/id_rsa \
+        RUN --mount=type=secret,id=$SECRET_PATH,mode=0400,target=/root/.ssh/id_ed25519 \
             git fetch --unshallow
     END
 
