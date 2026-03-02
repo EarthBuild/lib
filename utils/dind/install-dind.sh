@@ -117,6 +117,10 @@ install_dockerd_amazon() {
             yes | amazon-linux-extras install docker
         ;;
 
+        2023*)
+            dnf -y install docker
+        ;;
+
         *)  # Amazon Linux 1 uses versions like "2018.3" here, so dont bother enumerating
             yum -y install docker
         ;;
@@ -130,7 +134,7 @@ install_jq() {
             ;;
 
         amzn)
-            yum -y install jq
+            install_jq_amazon
             ;;
 
         *)
@@ -138,6 +142,19 @@ install_jq() {
             apt_get_update
             apt-get install -y jq
             ;;
+    esac
+}
+
+install_jq_amazon() {
+    version=$(sed -n -e 's/^VERSION="\?\([^\"]*\)"\?/\1/p' /etc/os-release)
+    case "$version" in
+        2023*)
+            dnf -y install jq
+        ;;
+
+        *)
+            yum -y install jq
+        ;;
     esac
 }
 
@@ -149,10 +166,26 @@ clean_after_install_debian_like() {
   fi
 }
 
+clean_after_install_amazon() {
+    version=$(sed -n -e 's/^VERSION="\?\([^\"]*\)"\?/\1/p' /etc/os-release)
+    case "$version" in
+        2023*)
+            dnf clean all
+        ;;
+
+        *)
+        # nothing to clean
+        ;;
+    esac
+}
+
 clean_after_install() {
     case "$distro" in
-        alpine | amzn)
+        alpine)
         # nothing to clean
+        ;;
+        amzn)
+        clean_after_install_amazon
         ;;
         *)
         clean_after_install_debian_like
