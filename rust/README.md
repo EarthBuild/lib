@@ -26,8 +26,8 @@ DO rust+INIT ...
 
 ### Arguments
 #### `cache_prefix`
-Overrides cache prefix for cache IDS. Its value is exported to the build environment under the entry: `$EARTHLY_CACHE_PREFIX`. 
-By default `${EARTHLY_TARGET_PROJECT_NO_TAG}#${OS_RELEASE}#earthly-cargo-cache`
+Overrides cache prefix for cache IDS. Its value is exported to the build environment under the entry: `$EARTH_CACHE_PREFIX`. 
+By default `${EARTH_TARGET_PROJECT_NO_TAG}#${OS_RELEASE}#earthly-cargo-cache`
 
 #### `keep_fingerprints (false)`
 
@@ -69,8 +69,8 @@ This function is thread safe. Parallel builds of targets calling this function s
 ## +SET_CACHE_MOUNTS_ENV
 
 Sets the following entries in the environment, to be used to mount the cargo caches.
- - `EARTHLY_RUST_CARGO_HOME_CACHE`: Code of the mount cache for the cargo home.
- - `EARTHLY_RUST_TARGET_CACHE`: Code of the mount cache for the target folder.
+ - `EARTH_RUST_CARGO_HOME_CACHE`: Code of the mount cache for the cargo home.
+ - `EARTH_RUST_TARGET_CACHE`: Code of the mount cache for the target folder.
 
 Notice that in order to run this function, [+INIT](#init) must be called first.
 
@@ -85,7 +85,7 @@ Optional cache suffix for the target folder cache ID.
 clean-target:
   ...
   DO rust+SET_CACHE_MOUNTS_ENV
-  RUN --mount=$EARTHLY_RUST_TARGET_CACHE rm -rf target
+  RUN --mount=$EARTH_RUST_TARGET_CACHE rm -rf target
 ```
 
 ## +COPY_OUTPUT
@@ -101,7 +101,7 @@ Regex matching output artifacts files to be copied to `./target` folder in the c
 ### Example
 ```earthfile
 DO rust+SET_RUST_CACHE_MOUNTS
-RUN --mount=$EARTHLY_RUST_CARGO_HOME_CACHE --mount=$EARTHLY_RUST_TARGET_CACHE cargo build --release
+RUN --mount=$EARTH_RUST_CARGO_HOME_CACHE --mount=$EARTH_RUST_TARGET_CACHE cargo build --release
 DO rust+COPY_OUTPUT --output="release/[^\./]+" # Keep all the files in /target/release that don't have any extension.
 ```
 ## +CROSS 
