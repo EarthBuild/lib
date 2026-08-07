@@ -2,19 +2,19 @@
 
 # lib/rust
 
-Earthly's official collection of Rust [functions](https://docs.earthly.dev/docs/guides/functions).
+EarthBuild's official collection of Rust [functions](https://docs.earthbuild.dev/docs/guides/functions).
 
 First, import the library up in your Earthfile:
 ```earthfile
 VERSION 0.8
-IMPORT github.com/earthly/lib/rust:<version/commit> AS rust
+IMPORT github.com/EarthBuild/lib/rust:<version/commit> AS rust
 ```
 
 ## +INIT
 
 This function sets some configuration in the environment (used by following functions), and installs required dependencies.
 It must be called once per build environment, to avoid passing repetitive arguments to the functions called after it, and to install required dependencies before the source files are copied from the build context.
-Note that this function changes `$CARGO_HOME` in the calling environment to point to a cache mount later on. 
+Note that this function changes `$CARGO_HOME` in the calling environment to point to a cache mount later on.
 It is recommended then that all interaction with cargo is done throug the `+CARGO` function or using cache mounts returned by `+SET_CACHE_MOUNTS_ENV`.
 
 ### Usage
@@ -26,12 +26,12 @@ DO rust+INIT ...
 
 ### Arguments
 #### `cache_prefix`
-Overrides cache prefix for cache IDS. Its value is exported to the build environment under the entry: `$EARTHLY_CACHE_PREFIX`. 
-By default `${EARTHLY_TARGET_PROJECT_NO_TAG}#${OS_RELEASE}#earthly-cargo-cache`
+Overrides cache prefix for cache IDS. Its value is exported to the build environment under the entry: `$EARTH_CACHE_PREFIX`.
+By default `${EARTH_TARGET_PROJECT_NO_TAG}#${OS_RELEASE}#earth-cargo-cache`
 
 #### `keep_fingerprints (false)`
 
-By default `+CARGO` removes the [compiler fingerprints](https://doc.rust-lang.org/nightly/nightly-rustc/cargo/core/compiler/fingerprint/struct.Fingerprint.html) of those packages found in your source code (not their dependencies), to force their recompilation and work even when the Earthly `COPY` commands overwrote file mtimes (by default).
+By default `+CARGO` removes the [compiler fingerprints](https://doc.rust-lang.org/nightly/nightly-rustc/cargo/core/compiler/fingerprint/struct.Fingerprint.html) of those packages found in your source code (not their dependencies), to force their recompilation and work even when the EarthBuild `COPY` commands overwrote file mtimes (by default).
 
 Set `keep_fingerprints=true` to keep the source packages fingerprints and avoid their recompilation, when source packages have been copied with `--keep-ts `option.
 
@@ -69,14 +69,14 @@ This function is thread safe. Parallel builds of targets calling this function s
 ## +SET_CACHE_MOUNTS_ENV
 
 Sets the following entries in the environment, to be used to mount the cargo caches.
- - `EARTHLY_RUST_CARGO_HOME_CACHE`: Code of the mount cache for the cargo home.
- - `EARTHLY_RUST_TARGET_CACHE`: Code of the mount cache for the target folder.
+ - `EARTH_RUST_CARGO_HOME_CACHE`: Code of the mount cache for the cargo home.
+ - `EARTH_RUST_TARGET_CACHE`: Code of the mount cache for the target folder.
 
 Notice that in order to run this function, [+INIT](#init) must be called first.
 
 ### Arguments
 
-#### `target_cache_suffix` 
+#### `target_cache_suffix`
 Optional cache suffix for the target folder cache ID.
 
 ### Example
@@ -85,7 +85,7 @@ Optional cache suffix for the target folder cache ID.
 clean-target:
   ...
   DO rust+SET_CACHE_MOUNTS_ENV
-  RUN --mount=$EARTHLY_RUST_TARGET_CACHE rm -rf target
+  RUN --mount=$EARTH_RUST_TARGET_CACHE rm -rf target
 ```
 
 ## +COPY_OUTPUT
@@ -95,21 +95,21 @@ Use it function when you want to `SAVE ARTIFACT` from the target folder (mounted
 Notice that in order to run this function, `+SET_CACHE_MOUNTS_ENV` or `+CARGO` must be called first.
 
 ### Arguments
-#### `output` 
+#### `output`
 Regex matching output artifacts files to be copied to `./target` folder in the caller filesystem (image layers).
 
 ### Example
 ```earthfile
 DO rust+SET_RUST_CACHE_MOUNTS
-RUN --mount=$EARTHLY_RUST_CARGO_HOME_CACHE --mount=$EARTHLY_RUST_TARGET_CACHE cargo build --release
+RUN --mount=$EARTH_RUST_CARGO_HOME_CACHE --mount=$EARTH_RUST_TARGET_CACHE cargo build --release
 DO rust+COPY_OUTPUT --output="release/[^\./]+" # Keep all the files in /target/release that don't have any extension.
 ```
-## +CROSS 
+## +CROSS
 
 Runs the [cross](https://github.com/cross-rs/cross) command: `cross $args --target $target` .
 
 Notice that:
-- This function makes use of `WITH DOCKER`, and hence parallelization might be tricky to achieve ([earthly#3808](https://github.com/earthly/earthly/issues/3808)). 
+- This function makes use of `WITH DOCKER`, and hence parallelization might be tricky to achieve ([earthly#3808](https://github.com/earthly/earthly/issues/3808)).
 - In order to run this function, [+INIT](#init) must be called first.
 
 ### Arguments
@@ -158,7 +158,7 @@ The Earthfile would look like:
 VERSION 0.8
 
 # Imports the library definition from default branch (in a real case, specify version or commit to guarantee immutability)
-IMPORT github.com/earthly/lib/rust AS rust
+IMPORT github.com/EarthBuild/lib/rust AS rust
 
 install:
   FROM rust:1.73.0-bookworm
@@ -167,7 +167,7 @@ install:
   RUN cargo install --locked cargo-deny
   RUN rustup component add clippy
   RUN rustup component add rustfmt
-  # Call +INIT before copying the source file to avoid installing depencies every time source code changes. 
+  # Call +INIT before copying the source file to avoid installing depencies every time source code changes.
   # This parametrization will be used in future calls to functions of the library
   DO rust+INIT --keep_fingerprints=true
 
@@ -209,7 +209,7 @@ cross:
   ARG --required target
   DO rust+CROSS --target=$target
   SAVE ARTIFACT target/$target AS LOCAL dist/$target
-    
+
 # all runs all other targets in parallel
 all:
   BUILD +lint
@@ -222,19 +222,19 @@ all:
 ## Mount caches and parallelization
 
 As of today, local Cargo builds cannot run in parallel for a given project, given that the output artifact folder is globally locked for the whole build.
-This library overcomes such limitation by using different mount caches for the target folder, one per Earthly target.
-While multiple concurrent builds of the same Earthly target will still block, the user now has the choice of creating new Earthly targets instead of reusing the same to increase parallelization.  
+This library overcomes such limitation by using different mount caches for the target folder, one per EarthBuild target.
+While multiple concurrent builds of the same EarthBuild target will still block, the user now has the choice of creating new EarthBuild targets instead of reusing the same to increase parallelization.
 
 Hence, this library uses several mount caches per tuple of `{project, os_release}`:
-- One cache mount for `$CARGO_HOME`, shared across all target builds without any locking involved. 
-- A family of locked cache mounts for `$CARGO_TARGET_DIR`. One per Earthly target. 
+- One cache mount for `$CARGO_HOME`, shared across all target builds without any locking involved.
+- A family of locked cache mounts for `$CARGO_TARGET_DIR`. One per EarthBuild target.
 
 Notice that:
-- the previous targets builds might belong to one or multiple Earthly builds, given that the caches involved are global.
+- the previous targets builds might belong to one or multiple EarthBuild builds, given that the caches involved are global.
 - builds will only be blocked by concurrent ones of the same target.
-- Earthly target builds are atomic in the sense that the artifacts returned are guaranteed to be the ones generated by that build.
+- EarthBuild target builds are atomic in the sense that the artifacts returned are guaranteed to be the ones generated by that build.
 
-For example, running `earthly +all` in the previous example will:
+For example, running `earth +all` in the previous example will:
 - run all targets (`+lint,+build,+test,+fmt,+check-dependencies`) in parallel without any blocking involved.
 - use a common cache mount for `$CARGO_HOME`.
-- use one individual `$CARGO_TARGET_DIR` cache mount per Earthly target.
+- use one individual `$CARGO_TARGET_DIR` cache mount per EarthBuild target.

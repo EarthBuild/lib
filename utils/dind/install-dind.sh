@@ -30,7 +30,7 @@ detect_jq() {
 
 print_debug() {
     set +u
-    if [ "$EARTHLY_DEBUG" = "true" ] ; then
+    if [ "$EARTH_DEBUG" = "true" ] ; then
         echo "$@"
     fi
     set -u

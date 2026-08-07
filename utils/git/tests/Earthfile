@@ -1,9 +1,7 @@
 VERSION --arg-scope-and-set --pass-args 0.7
 
-PROJECT earthly-technologies/core
-
 all:
-    BUILD --platform=linux/amd64 --platform=linux/arm64 +test-deep-clone-image \
+    BUILD +test-deep-clone-image \
         --base_image=alpine/git:latest \
         --base_image=alpine:latest \
         --base_image=debian:stable \
@@ -11,11 +9,11 @@ all:
         --base_image=ubuntu:latest \
         --base_image=amazonlinux:1 \
         --base_image=amazonlinux:2 \
-        --GIT_URL=https://github.com/earthly/hello-world.git \
-        --GIT_URL=git@github.com:earthly/hello-world.git \
-        --GIT_URL=git@github.com:earthly/hello-world \
+        --GIT_URL=https://github.com/EarthBuild/hello-world.git \
+        --GIT_URL=git@github.com:EarthBuild/hello-world.git \
+        --GIT_URL=git@github.com:EarthBuild/hello-world \
         --SECRET_PATH="" \
-        --SECRET_PATH="littleredcorvette-id_rsa" \
+        --SECRET_PATH="earthbuildci_id_ed25519" \
         --DEST_DIR="" \
         --DEST_DIR="some-other-dir"
 

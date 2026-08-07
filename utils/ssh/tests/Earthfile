@@ -1,7 +1,7 @@
 VERSION --pass-args --arg-scope-and-set 0.7
 
 all:
-    BUILD --platform=linux/amd64 --platform=linux/arm64 +test-add-known-hosts-image \
+    BUILD +test-add-known-hosts-image \
         --base_image=alpine:latest \
         --base_image=debian:stable \
         --base_image=debian:stable-slim \
